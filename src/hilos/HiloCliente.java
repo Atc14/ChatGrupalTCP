@@ -34,5 +34,12 @@ public class HiloCliente implements Runnable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        finally {
+            try {
+                sCliente.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
