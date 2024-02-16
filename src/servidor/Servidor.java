@@ -1,5 +1,6 @@
 package servidor;
 
+import datos.Usuario;
 import hilos.HiloServer;
 
 import java.io.IOException;
@@ -23,6 +24,22 @@ public class Servidor {
         getClientes().remove(cliente);
     }
 
+    private static final List<Usuario> usuarios = new ArrayList<>();
+
+    public static synchronized List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public static synchronized void agregarUsuario(Usuario usuario) {
+        if (!usuarios.contains(usuario)) {
+            usuarios.add(usuario);
+        }
+    }
+
+    public static synchronized void eliminarUsuario(Usuario usuario) {
+        usuarios.remove(usuario);
+    }
+
     public static void main(String[] args) {
         int puerto = 6004;
         ServerSocket servidor = null;
@@ -36,7 +53,7 @@ public class Servidor {
             try {
                 Socket cliente = servidor.accept();
                 agregarCliente(cliente);
-                Thread t = new Thread(new HiloServer());
+                Thread t = new Thread(new HiloServer(cliente));
                 t.start();
 
             } catch (IOException e) {

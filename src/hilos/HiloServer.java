@@ -1,5 +1,6 @@
 package hilos;
 
+import datos.Usuario;
 import servidor.Servidor;
 
 import java.io.*;
@@ -8,8 +9,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HiloServer implements Runnable {
+    private final Socket sCliente;
+    public HiloServer(Socket sCliente){
+        this.sCliente = sCliente;
+    }
     @Override
     public void run() {
+        synchronized (Servidor.getUsuarios()) {
+            try {
+                OutputStream outaux = sCliente.getOutputStream();
+                ObjectOutputStream flujo_salida = new ObjectOutputStream(outaux);
+                flujo_salida.writeObject(Servidor.getUsuarios());
+                flujo_salida.flush();
+                InputStream inaux = sCliente.getInputStream();
+
+                ObjectInputStream flujo_entrada = new ObjectInputStream(inaux);
+
+                Servidor.agregarUsuario((Usuario) flujo_entrada.readObject());
+                System.out.println(Servidor.getUsuarios());
+
+            } catch (IOException | ClassNotFoundException e) {
+                try {
+                    sCliente.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+
         System.out.println(Servidor.getClientes());
         synchronized (Servidor.getClientes()) {
             while (true) {
@@ -23,7 +50,6 @@ public class HiloServer implements Runnable {
                                 String mensaje = flujo_entrada.readUTF();
                                 System.out.println(mensaje);
                                 enviarMensajeAClientes(mensaje);
-
                             }
                         } else {
                             Servidor.eliminarCliente(cliente);
