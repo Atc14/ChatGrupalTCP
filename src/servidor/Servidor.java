@@ -11,15 +11,15 @@ import java.util.List;
 public class Servidor {
     private static final List<Socket> clientes = new ArrayList<>();
 
-    public static synchronized List<Socket> getClientes() {
+    public synchronized static List<Socket> getClientes() {
         return clientes;
     }
 
-    public static synchronized void agregarCliente(Socket cliente) {
+    public synchronized static void agregarCliente(Socket cliente) {
         clientes.add(cliente);
     }
 
-    public static  synchronized void eliminarCliente(Socket cliente) {
+    public synchronized static void eliminarCliente(Socket cliente) {
         getClientes().remove(cliente);
     }
 
