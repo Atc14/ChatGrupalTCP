@@ -26,17 +26,17 @@ public class Servidor {
 
     private static final List<Usuario> usuarios = new ArrayList<>();
 
-    public static synchronized List<Usuario> getUsuarios() {
+    public static List<Usuario> getUsuarios() {
         return usuarios;
     }
 
-    public static synchronized void agregarUsuario(Usuario usuario) {
+    public static void agregarUsuario(Usuario usuario) {
         if (!usuarios.contains(usuario)) {
             usuarios.add(usuario);
         }
     }
 
-    public static synchronized void eliminarUsuario(Usuario usuario) {
+    public static void eliminarUsuario(Usuario usuario) {
         usuarios.remove(usuario);
     }
 
