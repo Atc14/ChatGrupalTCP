@@ -13,6 +13,7 @@ import java.net.Socket;
 public class Chat extends JFrame {
     private JPanel Texto;
     private JList listaUsuarios;
+    private DefaultListModel<String> modelo = new DefaultListModel<>();
     private JTextArea mensajesChat;
     private JPanel panelInferior;
     private JTextField textField_endrada;
@@ -63,5 +64,10 @@ public class Chat extends JFrame {
 
     public synchronized JPanel getTexto() {
         return Texto;
+    }
+
+    public synchronized void agregarUsuarioLista(String usuario) {
+        modelo.addElement(usuario);
+        listaUsuarios.setModel(modelo);
     }
 }

@@ -26,7 +26,7 @@ public class Servidor {
 
     private static final List<Usuario> usuarios = new ArrayList<>();
 
-    public static List<Usuario> getUsuarios() {
+    public static  List<Usuario> getUsuarios() {
         return usuarios;
     }
 
@@ -35,7 +35,6 @@ public class Servidor {
             usuarios.add(usuario);
         }
     }
-
     public static void eliminarUsuario(Usuario usuario) {
         usuarios.remove(usuario);
     }

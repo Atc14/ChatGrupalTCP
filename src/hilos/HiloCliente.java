@@ -47,7 +47,17 @@ public class HiloCliente implements Runnable {
             DataInputStream flujo_entrada = new DataInputStream(in);
             while (!sCliente.isClosed()) {
                 if (in.available() > 0) {
-                    this.chat.agregarMensaje(flujo_entrada.readUTF());
+                    String recibido = flujo_entrada.readUTF();
+                    if(recibido.contains("\\c")){
+                        recibido = recibido.replace("\\c","");
+                        String [] nombres =recibido.split(",");
+                        for (String s : nombres) {
+                            this.chat.agregarUsuarioLista(s);
+                        }
+                    }
+                    else {
+                        this.chat.agregarMensaje(recibido);
+                    }
                 }
             }
         } catch (IOException e) {
