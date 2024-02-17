@@ -26,7 +26,7 @@ public class Servidor {
 
     private static final List<Usuario> usuarios = new ArrayList<>();
 
-    public static  List<Usuario> getUsuarios() {
+    public static synchronized   List<Usuario> getUsuarios() {
         return usuarios;
     }
 

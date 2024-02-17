@@ -5,9 +5,7 @@ import datos.Chat;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class HiloCliente implements Runnable {
@@ -33,8 +31,16 @@ public class HiloCliente implements Runnable {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     try {
-                        sCliente.close();
+                        if (!sCliente.isClosed()) {
+                            OutputStream outputStream = sCliente.getOutputStream();
+                            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                            dataOutputStream.writeUTF("\\q" + userName);
+                            dataOutputStream.flush();
+                            sCliente.close();
+                        }
+
                     } catch (IOException ex) {
+                        chat.dispose();
                         throw new RuntimeException(ex);
                     }
                     chat.dispose();
@@ -48,15 +54,16 @@ public class HiloCliente implements Runnable {
             while (!sCliente.isClosed()) {
                 if (in.available() > 0) {
                     String recibido = flujo_entrada.readUTF();
-                    if(recibido.contains("\\c")){
-                        recibido = recibido.replace("\\c","");
-                        String [] nombres =recibido.split(",");
+                    if (recibido.contains("\\c")) {
+                        recibido = recibido.replace("\\c", "");
+                        String[] nombres = recibido.split(",");
                         for (String s : nombres) {
-                            this.chat.agregarUsuarioLista(s);
+                            chat.agregarUsuarioLista(s);
                         }
-                    }
-                    else {
-                        this.chat.agregarMensaje(recibido);
+                    } else if (recibido.contains("\\l")) {
+                        chat.limpiarLista();
+                    } else {
+                        chat.agregarMensaje(recibido);
                     }
                 }
             }

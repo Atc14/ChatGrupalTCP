@@ -30,6 +30,7 @@ public class HiloServer implements Runnable {
                 ObjectInputStream flujo_entrada = new ObjectInputStream(inaux);
 
                 Servidor.agregarUsuario((Usuario) flujo_entrada.readObject());
+                enviarListaAClientes("\\l");
                 enviarListaAClientes("\\c");
                 System.out.println(Servidor.getUsuarios());
 
@@ -43,7 +44,6 @@ public class HiloServer implements Runnable {
             }
         }
 
-        System.out.println(Servidor.getClientes());
         synchronized (Servidor.getClientes()) {
             while (!parar) {
                 List<Socket> clientes = new ArrayList<>(Servidor.getClientes());
@@ -54,19 +54,25 @@ public class HiloServer implements Runnable {
                             if (in.available() > 0) {
                                 DataInputStream flujo_entrada = new DataInputStream(in);
                                 String mensaje = flujo_entrada.readUTF();
-
-                                enviarMensajeAClientes(mensaje);
+                                if (mensaje.contains("\\q")) {
+                                    eliminarClientes(mensaje);
+                                    enviarListaAClientes("\\l");
+                                    enviarListaAClientes("\\c");
+                                } else {
+                                    enviarMensajeAClientes(mensaje);
+                                }
                             }
                         } else {
                             Servidor.eliminarCliente(cliente);
-                            if(cliente.equals(sCliente)) {
+                            if (cliente.equals(sCliente)) {
                                 parar = true;
                             }
                         }
                     } catch (IOException e) {
                         //Si ocurre una excepción, eliminamos el cliente de la lista
                         Servidor.eliminarCliente(cliente);
-                        if(cliente.equals(sCliente)) {
+
+                        if (cliente.equals(sCliente)) {
                             parar = true;
                         }
                     }
@@ -110,7 +116,6 @@ public class HiloServer implements Runnable {
                     }
                     flujo_salida.writeUTF(mensaje + texto);
                     flujo_salida.flush();
-                    System.out.println(texto);
 
                 } else {
                     Servidor.eliminarCliente(otroCliente);
@@ -121,6 +126,19 @@ public class HiloServer implements Runnable {
                 Servidor.eliminarCliente(otroCliente);
 
             }
+        }
+    }
+
+    private synchronized void eliminarClientes(String mensaje) {
+        mensaje = mensaje.replace("\\q", "");
+        Usuario eliminarUsuario = null;
+        for (Usuario u : Servidor.getUsuarios()) {
+            if (u.getUserName().equals(mensaje)) {
+                eliminarUsuario = u;
+            }
+        }
+        if (eliminarUsuario != null) {
+            Servidor.eliminarUsuario(eliminarUsuario);
         }
     }
 

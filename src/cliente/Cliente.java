@@ -31,7 +31,7 @@ public class Cliente {
             }
             for (Usuario u : usuarios) {
                 if (u.getUserName().equals(userName)) {
-                    JOptionPane.showMessageDialog(null, "Ese nombre está repetido. La aplicación se cerrará.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Ese nombre está repetido. La aplicación se cerrará.", "Error", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
                 }
             }
@@ -46,7 +46,7 @@ public class Cliente {
                 throw new RuntimeException(e);
             }
 
-            Thread t = new Thread(new HiloCliente(sCliente,userName));
+            Thread t = new Thread(new HiloCliente(sCliente, userName));
             t.start();
         } catch (IOException e) {
             throw new RuntimeException(e);

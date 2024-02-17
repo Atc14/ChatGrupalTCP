@@ -70,4 +70,9 @@ public class Chat extends JFrame {
         modelo.addElement(usuario);
         listaUsuarios.setModel(modelo);
     }
+
+    public synchronized void limpiarLista() {
+        modelo.removeAllElements();
+        listaUsuarios.setModel(modelo);
+    }
 }
