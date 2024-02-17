@@ -10,8 +10,10 @@ import java.util.List;
 
 public class HiloServer implements Runnable {
     private final Socket sCliente;
+    private boolean parar;
     public HiloServer(Socket sCliente){
         this.sCliente = sCliente;
+        this.parar = false;
     }
     @Override
     public void run() {
@@ -53,11 +55,12 @@ public class HiloServer implements Runnable {
                             }
                         } else {
                             Servidor.eliminarCliente(cliente);
+                            parar = true;
                         }
                     } catch (IOException e) {
                         //Si ocurre una excepción, eliminamos el cliente de la lista
                         Servidor.eliminarCliente(cliente);
-                        break;
+                        parar = true;
                     }
                 }
             }

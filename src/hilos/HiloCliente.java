@@ -26,13 +26,13 @@ public class HiloCliente implements Runnable{
         try {
             InputStream in = sCliente.getInputStream();
             DataInputStream flujo_entrada = new DataInputStream(in);
-            while (true) {
+            while (!sCliente.isClosed()) {
                 if (in.available() > 0) {
                     this.chat.agregarMensaje(flujo_entrada.readUTF());
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Socket cerrado");
         }
         finally {
             try {

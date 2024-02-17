@@ -39,8 +39,10 @@ public class Chat extends JFrame {
                     if (!textField_endrada.getText().isBlank()) {
                         mensaje = new Mensaje(userName, textField_endrada.getText());
                         try {
-                            flujo_salida.writeUTF(mensaje.getMensaje());
-                            flujo_salida.flush();
+                            if(!cliente.isClosed()) {
+                                flujo_salida.writeUTF(mensaje.getMensaje());
+                                flujo_salida.flush();
+                            }
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
